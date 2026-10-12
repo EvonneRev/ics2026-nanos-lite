@@ -1,6 +1,7 @@
 #include <common.h>
 #include <fs.h>
 #include "syscall.h"
+void naive_uload(PCB *pcb, const char *filename);
 void do_syscall(Context *c) {
   uintptr_t a[4];
   a[0] = c->GPR1;
@@ -13,13 +14,14 @@ void do_syscall(Context *c) {
 
   
   switch (a[0]) {
-    case SYS_exit:  halt(a[1]); break;
+    case SYS_exit:   naive_uload(NULL, "/bin/menu"); break;
     case SYS_yield: yield(); c->GPRx = 0; break;   // 返回值写到 a0
     case SYS_open:  c->GPRx = fs_open((const char *)a[1], a[2], a[3]); break;
     case SYS_read:  c->GPRx = fs_read(a[1], (void *)a[2], a[3]); break;
     case SYS_write: c->GPRx = fs_write(a[1], (const void *)a[2], a[3]); break;
     case SYS_lseek: c->GPRx = fs_lseek(a[1], a[2], a[3]); break;
     case SYS_close: c->GPRx = fs_close(a[1]); break;
+    case SYS_execve: naive_uload(NULL, (const char *)a[1]); break;
 
     case SYS_brk:   c->GPRx = 0; break;   // 单任务阶段，总是允许调整堆
 
