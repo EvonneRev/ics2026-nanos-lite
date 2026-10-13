@@ -1,5 +1,6 @@
 #include <common.h>
 #include <fs.h>
+#include <proc.h>
 #include "syscall.h"
 void naive_uload(PCB *pcb, const char *filename);
 void do_syscall(Context *c) {
